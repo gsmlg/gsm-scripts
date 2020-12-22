@@ -1,9 +1,9 @@
-const path = require('path')
-const {ifAnyDep, hasFile, hasPkgProp, fromRoot} = require('../utils')
+const path = require('path');
+const {ifAnyDep, hasFile, hasPkgProp, fromRoot} = require('../utils');
 
-const here = p => path.join(__dirname, p)
+const here = (p) => path.join(__dirname, p);
 
-const useBuiltInBabelConfig = !hasFile('.babelrc') && !hasPkgProp('babel')
+const useBuiltInBabelConfig = !hasFile('.babelrc') && !hasPkgProp('babel');
 
 const ignores = [
   '/node_modules/',
@@ -12,7 +12,7 @@ const ignores = [
   '/__tests__/helpers/',
   '/__tests__/utils/',
   '__mocks__',
-]
+];
 
 const jestConfig = {
   roots: [fromRoot('src')],
@@ -36,10 +36,10 @@ const jestConfig = {
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
   coverageThreshold: {
     global: {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
     },
   },
   watchPlugins: [
@@ -47,21 +47,21 @@ const jestConfig = {
     require.resolve('jest-watch-typeahead/testname'),
   ],
   snapshotSerializers: [require.resolve('jest-serializer-path')],
-}
+};
 
 const setupFiles = [
   'tests/setup-env.js',
   'tests/setup-env.ts',
   'tests/setup-env.tsx',
-]
+];
 for (const setupFile of setupFiles) {
   if (hasFile(setupFile)) {
-    jestConfig.setupFilesAfterEnv = [fromRoot(setupFile)]
+    jestConfig.setupFilesAfterEnv = [fromRoot(setupFile)];
   }
 }
 
 if (useBuiltInBabelConfig) {
-  jestConfig.transform = {'^.+\\.(js|jsx|ts|tsx)$': here('./babel-transform')}
+  jestConfig.transform = {'^.+\\.(js|jsx|ts|tsx)$': here('./babel-transform')};
 }
 
-module.exports = jestConfig
+module.exports = jestConfig;
