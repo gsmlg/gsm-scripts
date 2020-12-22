@@ -1,5 +1,5 @@
 <div align="center">
-<h1>kcd-scripts 🛠📦</h1>
+<h1>gsmlg-scripts 🛠📦</h1>
 
 <p>CLI toolbox for common scripts for my projects</p>
 </div>
@@ -52,27 +52,27 @@ This module is distributed via [npm][npm] which is bundled with [node][node] and
 should be installed as one of your project's `devDependencies`:
 
 ```
-npm install --save-dev kcd-scripts
+npm install --save-dev gsmlg-scripts
 ```
 
 ## Usage
 
-This is a CLI and exposes a bin called `kcd-scripts`. I don't really plan on
+This is a CLI and exposes a bin called `gsmlg-scripts`. I don't really plan on
 documenting or testing it super duper well because it's really specific to my
 needs. You'll find all available scripts in `src/scripts`.
 
 This project actually dogfoods itself. If you look in the `package.json`, you'll
 find scripts with `node src {scriptName}`. This serves as an example of some of
-the things you can do with `kcd-scripts`.
+the things you can do with `gsmlg-scripts`.
 
 ### Overriding Config
 
-Unlike `react-scripts`, `kcd-scripts` allows you to specify your own
+Unlike `react-scripts`, `gsmlg-scripts` allows you to specify your own
 configuration for things and have that plug directly into the way things work
-with `kcd-scripts`. There are various ways that it works, but basically if you
+with `gsmlg-scripts`. There are various ways that it works, but basically if you
 want to have your own config for something, just add the configuration and
-`kcd-scripts` will use that instead of it's own internal config. In addition,
-`kcd-scripts` exposes its configuration so you can use it and override only the
+`gsmlg-scripts` will use that instead of it's own internal config. In addition,
+`gsmlg-scripts` exposes its configuration so you can use it and override only the
 parts of the config you need to.
 
 This can be a very helpful way to make editor integration work for tools like
@@ -82,7 +82,7 @@ So, if we were to do this for ESLint, you could create an `.eslintrc` with the
 contents of:
 
 ```
-{"extends": "./node_modules/kcd-scripts/eslint.js"}
+{"extends": "./node_modules/gsmlg-scripts/eslint.js"}
 ```
 
 > Note: for now, you'll have to include an `.eslintignore` in your project until
@@ -91,13 +91,13 @@ contents of:
 Or, for `babel`, a `.babelrc` with:
 
 ```
-{"presets": ["kcd-scripts/babel"]}
+{"presets": ["gsmlg-scripts/babel"]}
 ```
 
 Or, for `jest`:
 
 ```javascript
-const {jest: jestConfig} = require('kcd-scripts/config')
+const {jest: jestConfig} = require('gsmlg-scripts/config')
 module.exports = Object.assign(jestConfig, {
   // your overrides here
 
@@ -108,7 +108,7 @@ module.exports = Object.assign(jestConfig, {
 })
 ```
 
-> Note: `kcd-scripts` intentionally does not merge things for you when you start
+> Note: `gsmlg-scripts` intentionally does not merge things for you when you start
 > configuring things to make it less magical and more straightforward. Extending
 > can take place on your terms. I think this is actually a great way to do this.
 
@@ -116,14 +116,14 @@ module.exports = Object.assign(jestConfig, {
 
 If the `tsconfig.json`-file is present in the project root directory and
 `typescript` is a dependency the `@babel/preset-typescript` will automatically
-get loaded when you use the default babel config that comes with `kcd-scripts`.
+get loaded when you use the default babel config that comes with `gsmlg-scripts`.
 If you customized your `.babelrc`-file you might need to manually add
 `@babel/preset-typescript` to the `presets`-section.
 
-`kcd-scripts` will automatically load any `.ts` and `.tsx` files, including the
+`gsmlg-scripts` will automatically load any `.ts` and `.tsx` files, including the
 default entry point, so you don't have to worry about any rollup configuration.
 
-If you have a `typecheck` script (normally set to `kcd-scripts typecheck`) that
+If you have a `typecheck` script (normally set to `gsmlg-scripts typecheck`) that
 will be run as part of the `validate` script (which is run as part of the
 `pre-commit` script as well).
 
@@ -204,6 +204,7 @@ Thanks goes to these people ([emoji key][emojis]):
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors][all-contributors] specification.

@@ -1,5 +1,5 @@
 {
-  "name": "kcd-scripts",
+  "name": "gsmlg-scripts",
   "version": "0.0.0-semantically-released",
   "description": "CLI for common scripts for my projects",
   "engines": {
@@ -8,7 +8,7 @@
     "yarn": ">=1"
   },
   "bin": {
-    "kcd-scripts": "dist/index.js"
+    "gsmlg-scripts": "dist/index.js"
   },
   "scripts": {
     "test": "node src test",
@@ -29,7 +29,7 @@
     "shared-tsconfig.json"
   ],
   "keywords": [],
-  "author": "Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)",
+  "author": "Jonathan Gao <me@gsmlg.org> (https://gsmlg.com)",
   "license": "MIT",
   "dependencies": {
     "@babel/cli": "^7.12.8",
@@ -109,12 +109,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kentcdodds/kcd-scripts"
+    "url": "https://github.com/gsmlg/gsmlg-scripts"
   },
   "bugs": {
-    "url": "https://github.com/kentcdodds/kcd-scripts/issues"
+    "url": "https://github.com/gsmlg/gsmlg-scripts/issues"
   },
-  "homepage": "https://github.com/kentcdodds/kcd-scripts#readme",
+  "homepage": "https://github.com/gsmlg/gsmlg-scripts#readme",
   "devDependencies": {
     "jest-in-case": "^1.0.2",
     "slash": "^3.0.0"

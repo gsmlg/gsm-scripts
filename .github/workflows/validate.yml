@@ -16,7 +16,7 @@ jobs:
     if: ${{ !contains(github.head_ref, 'all-contributors') }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         node: [10.18, 12, 14, 15]
     runs-on: ${{ matrix.os }}
     steps:
@@ -48,7 +48,7 @@ jobs:
     needs: main
     runs-on: ubuntu-latest
     if:
-      ${{ github.repository == 'kentcdodds/kcd-scripts' &&
+      ${{ github.repository == 'gsmlg/gsmlg-scripts' &&
       contains('refs/heads/master,refs/heads/beta,refs/heads/next,refs/heads/alpha',
       github.ref) && github.event_name == 'push' }}
     steps:

@@ -1,9 +1,9 @@
-const {resolveKcdScripts} = require('../utils')
+const {resolveGsmlgScripts} = require('../utils');
 
-const kcdScripts = resolveKcdScripts()
+const gsmlgScripts = resolveGsmlgScripts();
 
 module.exports = {
   hooks: {
-    'pre-commit': `"${kcdScripts}" pre-commit`,
+    'pre-commit': `"${gsmlgScripts}" pre-commit`,
   },
-}
+};

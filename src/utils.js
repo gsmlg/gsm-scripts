@@ -1,94 +1,95 @@
-const fs = require('fs')
-const path = require('path')
-const spawn = require('cross-spawn')
-const rimraf = require('rimraf')
-const mkdirp = require('mkdirp')
-const arrify = require('arrify')
-const has = require('lodash.has')
-const readPkgUp = require('read-pkg-up')
-const which = require('which')
-const {cosmiconfigSync} = require('cosmiconfig')
+const fs = require('fs');
+const path = require('path');
+const spawn = require('cross-spawn');
+const rimraf = require('rimraf');
+const mkdirp = require('mkdirp');
+const arrify = require('arrify');
+const has = require('lodash.has');
+const readPkgUp = require('read-pkg-up');
+const which = require('which');
+const {cosmiconfigSync} = require('cosmiconfig');
 
 const {packageJson: pkg, path: pkgPath} = readPkgUp.sync({
   cwd: fs.realpathSync(process.cwd()),
-})
-const appDirectory = path.dirname(pkgPath)
+});
+const appDirectory = path.dirname(pkgPath);
 
-function resolveKcdScripts() {
+function resolveGsmlgScripts() {
   if (
-    pkg.name === 'kcd-scripts' ||
-    // this happens on install of husky within kcd-scripts locally
+    pkg.name === 'gsmlg-scripts' ||
+    // this happens on install of husky within gsmlg-scripts locally
     appDirectory.includes(path.join(__dirname, '..'))
   ) {
-    return require.resolve('./').replace(process.cwd(), '.')
+    return require.resolve('./').replace(process.cwd(), '.');
   }
-  return resolveBin('kcd-scripts')
+  return resolveBin('gsmlg-scripts');
 }
 
 // eslint-disable-next-line complexity
 function resolveBin(modName, {executable = modName, cwd = process.cwd()} = {}) {
-  let pathFromWhich
+  let pathFromWhich;
   try {
-    pathFromWhich = fs.realpathSync(which.sync(executable))
-    if (pathFromWhich && pathFromWhich.includes('.CMD')) return pathFromWhich
+    pathFromWhich = fs.realpathSync(which.sync(executable));
+    if (pathFromWhich && pathFromWhich.includes('.CMD')) return pathFromWhich;
   } catch (_error) {
     // ignore _error
   }
   try {
-    const modPkgPath = require.resolve(`${modName}/package.json`)
-    const modPkgDir = path.dirname(modPkgPath)
-    const {bin} = require(modPkgPath)
-    const binPath = typeof bin === 'string' ? bin : bin[executable]
-    const fullPathToBin = path.join(modPkgDir, binPath)
+    const modPkgPath = require.resolve(`${modName}/package.json`);
+    const modPkgDir = path.dirname(modPkgPath);
+    const {bin} = require(modPkgPath);
+    const binPath = typeof bin === 'string' ? bin : bin[executable];
+    const fullPathToBin = path.join(modPkgDir, binPath);
     if (fullPathToBin === pathFromWhich) {
-      return executable
+      return executable;
     }
-    return fullPathToBin.replace(cwd, '.')
+    return fullPathToBin.replace(cwd, '.');
   } catch (error) {
     if (pathFromWhich) {
-      return executable
+      return executable;
     }
-    throw error
+    throw error;
   }
 }
 
-const fromRoot = (...p) => path.join(appDirectory, ...p)
-const hasFile = (...p) => fs.existsSync(fromRoot(...p))
+const fromRoot = (...p) => path.join(appDirectory, ...p);
+const hasFile = (...p) => fs.existsSync(fromRoot(...p));
 const ifFile = (files, t, f) =>
-  arrify(files).some(file => hasFile(file)) ? t : f
+  arrify(files).some((file) => hasFile(file)) ? t : f;
 
-const hasPkgProp = props => arrify(props).some(prop => has(pkg, prop))
+const hasPkgProp = (props) => arrify(props).some((prop) => has(pkg, prop));
 
-const hasPkgSubProp = pkgProp => props =>
-  hasPkgProp(arrify(props).map(p => `${pkgProp}.${p}`))
+const hasPkgSubProp = (pkgProp) => (props) =>
+  hasPkgProp(arrify(props).map((p) => `${pkgProp}.${p}`));
 
-const ifPkgSubProp = pkgProp => (props, t, f) =>
-  hasPkgSubProp(pkgProp)(props) ? t : f
+const ifPkgSubProp = (pkgProp) => (props, t, f) =>
+  hasPkgSubProp(pkgProp)(props) ? t : f;
 
-const hasScript = hasPkgSubProp('scripts')
-const hasPeerDep = hasPkgSubProp('peerDependencies')
-const hasDep = hasPkgSubProp('dependencies')
-const hasDevDep = hasPkgSubProp('devDependencies')
-const hasAnyDep = args => [hasDep, hasDevDep, hasPeerDep].some(fn => fn(args))
+const hasScript = hasPkgSubProp('scripts');
+const hasPeerDep = hasPkgSubProp('peerDependencies');
+const hasDep = hasPkgSubProp('dependencies');
+const hasDevDep = hasPkgSubProp('devDependencies');
+const hasAnyDep = (args) =>
+  [hasDep, hasDevDep, hasPeerDep].some((fn) => fn(args));
 
-const ifPeerDep = ifPkgSubProp('peerDependencies')
-const ifDep = ifPkgSubProp('dependencies')
-const ifDevDep = ifPkgSubProp('devDependencies')
-const ifAnyDep = (deps, t, f) => (hasAnyDep(arrify(deps)) ? t : f)
-const ifScript = ifPkgSubProp('scripts')
+const ifPeerDep = ifPkgSubProp('peerDependencies');
+const ifDep = ifPkgSubProp('dependencies');
+const ifDevDep = ifPkgSubProp('devDependencies');
+const ifAnyDep = (deps, t, f) => (hasAnyDep(arrify(deps)) ? t : f);
+const ifScript = ifPkgSubProp('scripts');
 
-const hasTypescript = hasAnyDep('typescript') && hasFile('tsconfig.json')
-const ifTypescript = (t, f) => (hasTypescript ? t : f)
+const hasTypescript = hasAnyDep('typescript') && hasFile('tsconfig.json');
+const ifTypescript = (t, f) => (hasTypescript ? t : f);
 
 function parseEnv(name, def) {
   if (envIsSet(name)) {
     try {
-      return JSON.parse(process.env[name])
+      return JSON.parse(process.env[name]);
     } catch (err) {
-      return process.env[name]
+      return process.env[name];
     }
   }
-  return def
+  return def;
 }
 
 function envIsSet(name) {
@@ -96,7 +97,7 @@ function envIsSet(name) {
     process.env.hasOwnProperty(name) &&
     process.env[name] &&
     process.env[name] !== 'undefined'
-  )
+  );
 }
 
 function getConcurrentlyArgs(scripts, {killOthers = true} = {}) {
@@ -109,20 +110,20 @@ function getConcurrentlyArgs(scripts, {killOthers = true} = {}) {
     'bgRed',
     'bgBlack',
     'bgYellow',
-  ]
+  ];
   scripts = Object.entries(scripts).reduce((all, [name, script]) => {
     if (script) {
-      all[name] = script
+      all[name] = script;
     }
-    return all
-  }, {})
+    return all;
+  }, {});
   const prefixColors = Object.keys(scripts)
     .reduce(
       (pColors, _s, i) =>
         pColors.concat([`${colors[i % colors.length]}.bold.white`]),
       [],
     )
-    .join(',')
+    .join(',');
 
   // prettier-ignore
   return [
@@ -135,17 +136,17 @@ function getConcurrentlyArgs(scripts, {killOthers = true} = {}) {
 }
 
 function uniq(arr) {
-  return Array.from(new Set(arr))
+  return Array.from(new Set(arr));
 }
 
 function writeExtraEntry(name, {cjs, esm}, clean = true) {
   if (clean) {
-    rimraf.sync(fromRoot(name))
+    rimraf.sync(fromRoot(name));
   }
-  mkdirp.sync(fromRoot(name))
+  mkdirp.sync(fromRoot(name));
 
-  const pkgJson = fromRoot(`${name}/package.json`)
-  const entryDir = fromRoot(name)
+  const pkgJson = fromRoot(`${name}/package.json`);
+  const entryDir = fromRoot(name);
 
   fs.writeFileSync(
     pkgJson,
@@ -158,14 +159,14 @@ function writeExtraEntry(name, {cjs, esm}, clean = true) {
       null,
       2,
     ),
-  )
+  );
 }
 
 function hasLocalConfig(moduleName, searchOptions = {}) {
-  const explorerSync = cosmiconfigSync(moduleName, searchOptions)
-  const result = explorerSync.search(pkgPath)
+  const explorerSync = cosmiconfigSync(moduleName, searchOptions);
+  const result = explorerSync.search(pkgPath);
 
-  return result !== null
+  return result !== null;
 }
 
 function generateTypeDefs(outputDir) {
@@ -179,7 +180,7 @@ function generateTypeDefs(outputDir) {
       '--outDir', outputDir,
     ],
     {stdio: 'inherit'},
-  )
+  );
 }
 
 module.exports = {
@@ -203,8 +204,8 @@ module.exports = {
   parseEnv,
   pkg,
   resolveBin,
-  resolveKcdScripts,
+  resolveGsmlgScripts,
   uniq,
   writeExtraEntry,
   generateTypeDefs,
-}
+};
